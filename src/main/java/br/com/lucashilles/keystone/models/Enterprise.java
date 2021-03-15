@@ -1,4 +1,4 @@
-package br.com.lucashilles.keystone;
+package br.com.lucashilles.keystone.models;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "sys_enterprise")
-public class EnterpriseModel extends PanacheEntity {
+public class Enterprise extends PanacheEntity {
     public String name;
     public String city;
     public String state;
@@ -17,10 +17,10 @@ public class EnterpriseModel extends PanacheEntity {
     public String fantasyName;
     public String cpfcnpj;
     @OneToOne
-    public UserModel owner;
+    public User owner;
     @OneToOne
-    public UserModel responsible;
+    public User responsible;
     @OneToMany(mappedBy = "enterprise", fetch = FetchType.LAZY,
             cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<MeasurementModel> measures;
+    public List<Measurement> measures;
 }

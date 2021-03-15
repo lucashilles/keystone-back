@@ -1,6 +1,7 @@
-package br.com.lucashilles.keystone;
+package br.com.lucashilles.keystone.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.security.jpa.Password;
@@ -11,14 +12,13 @@ import io.quarkus.security.jpa.Username;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sys_user")
+@Table(name = "sys_user", indexes = @Index(columnList = "email", unique = true))
 @UserDefinition
-public class UserModel extends PanacheEntity {
+public class User extends PanacheEntity {
     public String name;
     @Username
     public String email;
     @Password
-    @JsonIgnore
     public String password;
     public String cpfcnpj;
     @Roles
@@ -26,15 +26,18 @@ public class UserModel extends PanacheEntity {
     public String semaRegister;
     public String professionRegister;
 
+    @JsonIgnore
+    public String getPassword() {
+        return password;
+    }
 
-    /**
-     * Adds a new user in the database
-     * @param username the user name
-     * @param password the unencrypted password (it will be encrypted with bcrypt)
-     * @param role the comma-separated roles
-     */
+    @JsonProperty
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public static void add(String email, String password, String userType) {
-        UserModel user = new UserModel();
+        User user = new User();
         user.email = email;
         user.password = BcryptUtil.bcryptHash(password);
         user.userType = userType;

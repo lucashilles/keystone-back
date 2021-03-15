@@ -1,4 +1,4 @@
-package br.com.lucashilles.keystone;
+package br.com.lucashilles.keystone.models;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
@@ -7,11 +7,11 @@ import java.util.Date;
 
 @Entity
 @Table(name = "sys_measurement")
-public class MeasurementModel extends PanacheEntity {
+public class Measurement extends PanacheEntity {
     public Double measure;
     @Column(name = "measure_date", nullable = false,
             columnDefinition = "timestamp with time zone not null")
     public Date measureDate;
     @ManyToOne
-    public EnterpriseModel enterprise;
+    public Enterprise enterprise;
 }
