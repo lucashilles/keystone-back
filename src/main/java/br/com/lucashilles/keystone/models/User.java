@@ -10,9 +10,10 @@ import io.quarkus.security.jpa.UserDefinition;
 import io.quarkus.security.jpa.Username;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "sys_user", indexes = @Index(columnList = "email", unique = true))
+@Table(name = "sys_user", indexes = @Index(columnList = "email", unique = true, name = "email_sys_user"))
 @UserDefinition
 public class User extends PanacheEntity {
     public String name;
@@ -27,6 +28,11 @@ public class User extends PanacheEntity {
     public String professionRegister;
 
     @JsonIgnore
+    @ManyToMany(mappedBy = "users")
+    public List<Enterprise> enterprises;
+
+
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
@@ -36,12 +42,13 @@ public class User extends PanacheEntity {
         this.password = password;
     }
 
-    public static void add(String email, String password, String userType) {
+    public static User add(String email, String password, String userType) {
         User user = new User();
         user.email = email;
         user.password = BcryptUtil.bcryptHash(password);
         user.userType = userType;
         user.persist();
+        return user;
     }
 
 }

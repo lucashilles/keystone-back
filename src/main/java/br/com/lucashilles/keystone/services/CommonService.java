@@ -9,21 +9,25 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import java.util.HashMap;
+import java.util.Map;
 
 @Path("/api")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class CommonService {
 
     @GET
     @Path("/ping")
-    @Produces(MediaType.TEXT_PLAIN)
-    public String ping() {
-        return "pong";
+    public Map<String, String> ping() {
+        Map<String, String> hashMap = new HashMap<>();
+        hashMap.put("result", "pong");
+        return hashMap;
     }
 
     @GET
     @RolesAllowed("ENGINEER")
     @Path("/auth")
-    @Produces(MediaType.APPLICATION_JSON)
     public User auth(@Context SecurityContext securityContext) {
         String email = securityContext.getUserPrincipal().getName();
         return User.find("email", email).firstResult();
@@ -32,7 +36,6 @@ public class CommonService {
     @POST
     @Path("/register")
     @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
     public void register(User user) {
         System.out.println(user.password);
         user.password = BcryptUtil.bcryptHash(user.password);
